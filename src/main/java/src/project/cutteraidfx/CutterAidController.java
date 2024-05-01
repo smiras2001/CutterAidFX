@@ -147,55 +147,58 @@ public class CutterAidController implements Initializable {
         int horizontal = hSpacingSpinner.getValue();
         double space = spaceSizeSpinner.getValue();
 
-        boolean condition1 = (vertical == 0 && horizontal == 0);
-        boolean condition2 = vertical > 0;
-        double offset1 = (initWidth - finalWidth);
+        boolean hasNoMid = (vertical == 0 && horizontal == 0);
         double offset2 = (initLength - finalLength);
         double offset3 = (initWidth - finalLength);
         double offset4 = (vertical * space) + (upness * finalWidth);
         double offset5 = (horizontal * space) + (upness * finalWidth);
 
         List<Double> cut = new ArrayList<>();
+        switch(upness) {
+            case 1:
+                cut.add(initWidth - offset3 / 2);
+                cut.add(initLength - offset2 / 2);
+                cut.add(finalWidth);
+                cut.add(finalLength);
+                break;
+            case 2:
+                if (hasNoMid) {
+                    if (initWidth == finalLength && initLength == 2 * finalWidth) {
+                        cut.add(finalWidth);
 
-        if (upness == 1) {
-            cut.add(initWidth - offset1 / 2);
-            cut.add(initLength - offset2 / 2);
-            cut.add(finalWidth);
-            cut.add(finalLength);
-            outputTextArea.setText(formatResults(cut));
-        }
-        else if (upness == 2) {
-            if (condition1) {
-                if (initWidth == finalLength) {
-                    cut.add(finalWidth);
-
+                    }
+                    else if (initLength == finalLength && initWidth == 2 * finalWidth) {
+                        cut.add(finalWidth / 2);
+                    }
+                    else {
+                        cut.add(initWidth - offset3 / 2);
+                        cut.add(initLength - ((initLength - 2 * finalWidth) / 2));
+                        cut.add(finalLength);
+                        cut.add(finalWidth * 2);
+                        cut.add(finalWidth);
+                    }
                 }
                 else {
-                    cut.add(finalWidth / 2);
-                }
-                outputTextArea.setText(formatResults(cut));
-            }
-            else {
-                if (condition2) {
-                    cut.add(initWidth - offset3 / 2);
-                    cut.add(initLength - (initLength - offset4) / 2);
-                    cut.add(finalLength);
-                    cut.add(offset4);
-                    cut.add(offset4 - finalWidth);
-                    cut.add(finalWidth);
-                }
-                else {
-                    cut.add(initWidth - offset4);
-                    cut.add(initLength - offset2);
-                    cut.add(offset4);
-                    cut.add(finalLength);
-                    cut.add(offset4 - finalWidth);
-                    cut.add(finalWidth + space);
-                    cut.add(finalWidth);
-                }
-                outputTextArea.setText(formatResults(cut));
+                    if (vertical == 1) {
+                        cut.add(initWidth - offset3 / 2);
+                        cut.add(initLength - ((initLength - offset4) / 2));
+                        cut.add(finalLength);
+                        cut.add(offset4);
+                        cut.add(offset4 - finalWidth);
+                        cut.add(finalWidth);
+                    }
+                    else if (horizontal == 1) {
+                        cut.add(initWidth - ((initWidth - offset5) / 2));
+                        cut.add(initLength - ((initLength - offset2) / 2));
+                        cut.add(offset5);
+                        cut.add(finalLength);
+                        cut.add(offset5 - finalWidth);
+                        cut.add(finalWidth);
+                    }
+                break;
             }
         }
+        outputTextArea.setText(formatResults(cut));
     }
 
     private String formatResults(List<Double> cut) {
