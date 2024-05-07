@@ -154,50 +154,79 @@ public class CutterAidController implements Initializable {
         double offset5 = (horizontal * space) + (upness * finalWidth);
 
         List<Double> cut = new ArrayList<>();
-        switch(upness) {
-            case 1:
-                cut.add(initWidth - offset3 / 2);
-                cut.add(initLength - offset2 / 2);
-                cut.add(finalWidth);
-                cut.add(finalLength);
-                break;
-            case 2:
-                if (hasNoMid) {
-                    if (initWidth == finalLength && initLength == 2 * finalWidth) {
-                        cut.add(finalWidth);
+        try {
+            if (finalWidth > initWidth || finalLength > initLength) {
+                throw new IllegalArgumentException("Incorrect final size!");
+            }
 
-                    }
-                    else if (initLength == finalLength && initWidth == 2 * finalWidth) {
-                        cut.add(finalWidth / 2);
+            if ((vertical > 0 || horizontal > 0) && space == 0) {
+                throw new IllegalArgumentException("Please enter space size!");
+            }
+
+            switch(upness) {
+                case 1:
+                    cut.add(initWidth - offset3 / 2);
+                    cut.add(initLength - offset2 / 2);
+                    cut.add(finalWidth);
+                    cut.add(finalLength);
+                    break;
+                case 2:
+                    if (hasNoMid) {
+                        if (initWidth == finalLength && initLength == 2 * finalWidth) {
+                            cut.add(finalWidth);
+                        }
+                        else if (initLength == finalLength && initWidth == 2 * finalWidth) {
+                            cut.add(finalWidth);
+                        }
+                        else if (initWidth == finalLength) {
+                            cut.add(initLength - ((2 * finalWidth)) / 2);
+                            cut.add()
+                        }
+                        else {
+                            cut.add(initWidth - offset3 / 2);
+                            cut.add(initLength - ((initLength - 2 * finalWidth) / 2));
+                            cut.add(finalLength);
+                            cut.add(finalWidth * 2);
+                            cut.add(finalWidth);
+                        }
                     }
                     else {
-                        cut.add(initWidth - offset3 / 2);
-                        cut.add(initLength - ((initLength - 2 * finalWidth) / 2));
-                        cut.add(finalLength);
-                        cut.add(finalWidth * 2);
-                        cut.add(finalWidth);
+                        if (vertical == 1) {
+                            cut.add(initWidth - offset3 / 2);
+                            cut.add(initLength - ((initLength - offset4) / 2));
+                            cut.add(finalLength);
+                            cut.add(offset4);
+                            cut.add(offset4 - finalWidth);
+                            cut.add(finalWidth);
+                        } else if (horizontal == 1) {
+                            cut.add(initWidth - ((initWidth - offset5) / 2));
+                            cut.add(initLength - ((initLength - offset2) / 2));
+                            cut.add(offset5);
+                            cut.add(finalLength);
+                            cut.add(offset5 - finalWidth);
+                            cut.add(finalWidth);
+                        }
+                        break;
                     }
-                }
-                else {
-                    if (vertical == 1) {
-                        cut.add(initWidth - offset3 / 2);
-                        cut.add(initLength - ((initLength - offset4) / 2));
-                        cut.add(finalLength);
-                        cut.add(offset4);
-                        cut.add(offset4 - finalWidth);
-                        cut.add(finalWidth);
+                case 3:
+                    if (hasNoMid) {
+                        if (initWidth == finalLength && initLength == 3 * finalWidth) {
+                            cut.add(2 * finalWidth);
+                            cut.add(finalWidth);
+                        }
+                        else if (initLength == finalLength && initWidth == 3 * finalWidth) {
+                            cut.add(2 * finalWidth);
+                            cut.add(finalWidth);
+                        }
                     }
-                    else if (horizontal == 1) {
-                        cut.add(initWidth - ((initWidth - offset5) / 2));
-                        cut.add(initLength - ((initLength - offset2) / 2));
-                        cut.add(offset5);
-                        cut.add(finalLength);
-                        cut.add(offset5 - finalWidth);
-                        cut.add(finalWidth);
-                    }
-                break;
             }
         }
+        catch (IllegalArgumentException e) {
+            outputTextArea.setStyle("-fx-text-fill: red;");
+            outputTextArea.setText(e.getMessage());
+            return;
+        }
+        outputTextArea.setStyle("-fx-text-fill: black;");
         outputTextArea.setText(formatResults(cut));
     }
 
