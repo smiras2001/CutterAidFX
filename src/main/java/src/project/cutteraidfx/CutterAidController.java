@@ -16,6 +16,9 @@ import java.util.ResourceBundle;
 public class CutterAidController implements Initializable {
 
     @FXML
+    private ScrollPane mainScroll;
+
+    @FXML
     private AnchorPane anchorPane1;
 
     @FXML
@@ -131,7 +134,8 @@ public class CutterAidController implements Initializable {
                     return 0.0;
                 }
                 return Double.parseDouble(string);
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e) {
                 return 0.0;
             }
         }
@@ -155,8 +159,18 @@ public class CutterAidController implements Initializable {
 
         List<Double> cut = new ArrayList<>();
         try {
+            if ((initWidth >= initLength) || (finalWidth >= finalLength)) {
+                throw new IllegalArgumentException("Incorrect size!");
+            }
+
             if (finalWidth > initWidth || finalLength > initLength) {
                 throw new IllegalArgumentException("Incorrect final size!");
+            }
+
+            if ((finalWidth * upness > initLength) || finalWidth * upness > initWidth )
+
+            if ((finalWidth * upness <= initLength) || (finalWidth * upness <= finalWidth)) {
+                throw new IllegalArgumentException("Spacing is not needed!");
             }
 
             if ((vertical > 0 || horizontal > 0) && space == 0) {
@@ -180,7 +194,7 @@ public class CutterAidController implements Initializable {
                         }
                         else if (initWidth == finalLength) {
                             cut.add(initLength - ((2 * finalWidth)) / 2);
-                            cut.add()
+                            //cut.add()
                         }
                         else {
                             cut.add(initWidth - offset3 / 2);
@@ -232,8 +246,8 @@ public class CutterAidController implements Initializable {
 
     private String formatResults(List<Double> cut) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < cut.size(); i++) {
-            builder.append(i + 1).append(": ").append(cut.get(i)).append("\n");
+        for (int i = 1; i < cut.size(); i++) {
+            builder.append(i).append(": ").append(cut.get(i)).append("\n");
         }
         return builder.toString();
     }
